@@ -113,9 +113,10 @@ class Vocab:
         :return: the mapped tokens (torch.Tensor)
         """
         if isinstance(tokens, str):
-            return torch.tensor(self.stoi.get(tokens, _UNK_))
+            return torch.tensor([self.stoi.get(tokens, self.stoi[_UNK_])])
 
-        return torch.tensor([self.stoi.get(token, _UNK_) for token in tokens])
+        return torch.tensor([self.stoi.get(token, self.stoi[_UNK_])
+                             for token in tokens])
 
     @staticmethod
     def from_csv(file_name, max_size=-1, min_freq=0, for_labels=False):
