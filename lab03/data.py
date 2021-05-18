@@ -1,3 +1,5 @@
+import csv
+from collections import defaultdict
 from dataclasses import dataclass
 
 import torch
@@ -31,6 +33,27 @@ class NLPDataset(torch.utils.data.Dataset):
 
         self._text_vocab = text_vocab
         self._label_vocab = label_vocab
+
+    @staticmethod
+    def from_csv(file_name, text_vocab, label_vocab):
+        """
+        Constructs an NLPDataset from the given CSV file.
+
+        :param file_name: path to the dataset CSV file
+        :param text_vocab: the Vocab for text data
+        :param label_vocab: the Vocab for the corresponding labels
+        :return: an NLPDataset instance
+        """
+        items = []
+
+        with open(file_name) as data_file:
+            reader = csv.reader(data_file)
+
+            for row in reader:
+                text, label = row
+                items.append(NLPDataItem(text, label.strip()))
+
+        return NLPDataset(items, text_vocab, label_vocab)
 
     def __getitem__(self, index):
         pass
