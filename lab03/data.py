@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-import numpy as np
+import torch
+import torch.nn as nn
 
 
 @dataclass
@@ -73,17 +74,17 @@ def embedding_matrix(vocab, emb_length, file_name=None):
     :param vocab: a Vocab instance
     :param emb_length: length of an embedding vector
     :param file_name: the file containing the embeddings
-    :return: the embedding matrix
+    :return: the embedding matrix (torch.nn.Embedding)
     """
-    emb_matrix = np.random.default_rng().standard_normal((len(vocab), emb_length))
-    emb_matrix[0] = np.zeros(emb_length)
+    emb_matrix = torch.randn((len(vocab), emb_length))
+    emb_matrix[0] = torch.zeros(emb_length)
 
     if file_name:
         with open(file_name) as emb_file:
             for line in emb_file:
                 token, emb_string = line.split(maxsplit=1)
                 index = vocab.stoi[token]
-                
-                emb_matrix[index] = np.fromstring(emb_string, sep=' ')
 
-    return emb_matrix
+                emb_matrix[index] = torch.tensor(map(float, emb_string.split()))
+
+    return nn.Embedding.from_pretrained(emb_matrix, padding_idx=0)
