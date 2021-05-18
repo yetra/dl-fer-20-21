@@ -55,6 +55,10 @@ class NLPDataset(torch.utils.data.Dataset):
 
         return NLPDataset(items, text_vocab, label_vocab)
 
+    def __len__(self):
+        """Returns the number of NLPDataItems in the dataset."""
+        return len(self.items)
+
     def __getitem__(self, index):
         """Returns an int representation of the item at the given index."""
         item = self.items[index]
