@@ -19,17 +19,21 @@ class Vocab:
         :param max_size: the largest number of tokens that can be stored
         :param min_freq: the minimal frequency needed for storing a token
         """
-        self.frequencies = frequencies
         self.max_size = max_size
         self.min_freq = min_freq
 
-        self.stoi = self._stoi()
+        self.stoi = self._stoi(frequencies)
 
-    def _stoi(self):
-        """Creates a mapping of dataset tokens to integers."""
+    def _stoi(self, frequencies):
+        """
+        Creates a mapping of dataset tokens to integers.
+
+        :param frequencies: a dict of dataset token frequencies
+        :return: the token->int map
+        """
         stoi = {'<PAD>': 0, '<UNK>': 1}
 
-        sorted_tokens = sorted(self.frequencies, key=self.frequencies.get)
+        sorted_tokens = sorted(frequencies, key=frequencies.get)
         stoi.update({token: (i + 2) for i, token in enumerate(sorted_tokens)})
 
         return stoi
