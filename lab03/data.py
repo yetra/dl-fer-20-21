@@ -94,7 +94,7 @@ class Vocab:
         """
         stoi = {_PAD_: 0, _UNK_: 1}
 
-        sorted_tokens = sorted(frequencies, key=frequencies.get)
+        sorted_tokens = sorted(frequencies, key=frequencies.get, reverse=True)
 
         for i, token in enumerate(sorted_tokens):
             if len(stoi) == self.max_size:
