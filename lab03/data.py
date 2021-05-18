@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+import numpy as np
+
 
 @dataclass
 class NLPDataItem:
@@ -56,3 +58,32 @@ class Vocab:
             return self.stoi[tokens]
 
         return list(map(self.stoi.get, tokens))
+
+
+def embedding_matrix(vocab, emb_length, file_name=None):
+    """
+    Builds an embedding matrix for the given vocab.
+
+    If file_name is provided, embeddings are loaded from the file
+    (missing embeddings are initialized randomly).
+
+    If no file_name is provided, the matrix is randomly initialized
+    from the standard normal distribution.
+
+    :param vocab: a Vocab instance
+    :param emb_length: length of an embedding vector
+    :param file_name: the file containing the embeddings
+    :return: the embedding matrix
+    """
+    emb_matrix = np.random.default_rng().standard_normal((len(vocab), emb_length))
+    emb_matrix[0] = np.zeros(emb_length)
+
+    if file_name:
+        with open(file_name) as emb_file:
+            for line in emb_file:
+                token, emb_string = line.split(maxsplit=1)
+                index = vocab.stoi[token]
+                
+                emb_matrix[index] = np.fromstring(emb_string, sep=' ')
+
+    return emb_matrix
