@@ -23,6 +23,7 @@ class Vocab:
         self.min_freq = min_freq
 
         self.stoi = self._stoi(frequencies)
+        self.itos = {i: s for s, i in self.stoi.items()}
 
     def _stoi(self, frequencies):
         """
