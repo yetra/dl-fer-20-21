@@ -108,6 +108,35 @@ class Vocab:
 
         return torch.tensor([self.stoi.get(token, _UNK_) for token in tokens])
 
+    @staticmethod
+    def from_csv(file_name, max_size, min_freq, for_labels=False):
+        """
+        Constructs a Vocab instance from the given CSV file.
+
+        :param file_name: path to the dataset CSV file
+        :param max_size: the largest number of tokens that can be stored
+        :param min_freq: the minimal frequency needed for storing a token
+        :param for_labels: True if Vocab is for labels else False
+        :return: a Vocab instance
+        """
+        frequencies = defaultdict(int)
+
+        with open(file_name) as data_file:
+            reader = csv.reader(data_file)
+
+            for row in reader:
+                text, label = row
+
+                if not for_labels:
+                    tokens = text.split()
+
+                    for token in tokens:
+                        frequencies[token] += 1
+                else:
+                    frequencies[label.strip()] += 1
+
+        return Vocab(frequencies, max_size, min_freq)
+
 
 def embedding_matrix(vocab, emb_length, file_name=None):
     """
