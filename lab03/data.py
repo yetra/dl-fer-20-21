@@ -64,13 +64,13 @@ class NLPDataset(torch.utils.data.Dataset):
         item = self.items[index]
 
         return (self._text_vocab.encode(item.text),
-                self._text_vocab.encode(item.label))
+                self._label_vocab.encode(item.label))
 
 
 class Vocab:
     """Class for transforming tokens into integers."""
 
-    def __init__(self, frequencies, max_size=-1, min_freq=0):
+    def __init__(self, frequencies, max_size=-1, min_freq=0, for_labels=False):
         """
         Inits a Vocab instance.
 
@@ -78,21 +78,25 @@ class Vocab:
         :param max_size: the largest number of tokens that can be stored
                          (-1 if all tokens should be stored)
         :param min_freq: the minimal frequency needed for storing a token
+        :param for_labels: True if Vocab is for labels else False
         """
-        self.max_size = len(frequencies) + 2 if max_size == -1 else max_size
+        self.max_size = len(frequencies) if max_size == -1 else max_size
         self.min_freq = max(0, min_freq)
 
-        self.stoi = self._stoi(frequencies)
+        self.stoi = self._stoi(frequencies, for_labels)
         self.itos = {i: s for s, i in self.stoi.items()}
 
-    def _stoi(self, frequencies):
+    def _stoi(self, frequencies, for_labels):
         """
         Creates a mapping of dataset tokens to integers.
 
         :param frequencies: a dict of dataset token frequencies
+        :param for_labels: True if Vocab is for labels else False
         :return: the token->int map
         """
-        stoi = {_PAD_: 0, _UNK_: 1}
+        stoi = {_PAD_: 0, _UNK_: 1} if not for_labels else {}
+        shift = len(stoi)  # for correct indexing if not for_labels
+        self.max_size += shift
 
         sorted_tokens = sorted(frequencies, key=frequencies.get, reverse=True)
 
@@ -101,7 +105,7 @@ class Vocab:
                 break
 
             if frequencies[token] >= self.min_freq:
-                stoi[token] = i + 2
+                stoi[token] = i + shift
 
         return stoi
 
@@ -144,7 +148,7 @@ class Vocab:
                 else:
                     frequencies[label.strip()] += 1
 
-        return Vocab(frequencies, max_size, min_freq)
+        return Vocab(frequencies, max_size, min_freq, for_labels)
 
 
 def embedding_matrix(vocab, emb_length, file_name=None):
