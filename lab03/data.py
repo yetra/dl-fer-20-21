@@ -35,6 +35,9 @@ class Vocab:
         stoi = {'<PAD>': 0, '<UNK>': 1}
 
         sorted_tokens = sorted(frequencies, key=frequencies.get)
-        stoi.update({token: (i + 2) for i, token in enumerate(sorted_tokens)})
+
+        for i, token in enumerate(sorted_tokens):
+            if len(stoi) <= self.max_size and frequencies[token] >= self.min_freq:
+                stoi[token] = i + 2
 
         return stoi
