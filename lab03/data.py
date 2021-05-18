@@ -189,3 +189,19 @@ def pad_collate(batch, padding_value=0.0):
     return (nn.utils.rnn.pad_sequence(texts, batch_first=True, padding_value=padding_value),
             torch.tensor(labels),
             torch.tensor([len(text) for text in texts]))
+
+
+if __name__ == '__main__':
+    batch_size = 2
+    shuffle = False
+
+    train_dataset = NLPDataset.from_csv('data/sst_train_raw.csv')
+    train_data_loader = torch.utils.data.DataLoader(
+        dataset=train_dataset, batch_size=batch_size,
+        shuffle=shuffle, collate_fn=pad_collate)
+
+    texts, labels, lengths = next(iter(train_data_loader))
+
+    print(f'Texts: {texts}')
+    print(f'Labels: {labels}')
+    print(f'Lengths: {lengths}')
