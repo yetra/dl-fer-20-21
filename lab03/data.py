@@ -49,8 +49,7 @@ class NLPDataset(torch.utils.data.Dataset):
         with open(file_name) as data_file:
             reader = csv.reader(data_file)
 
-            for row in reader:
-                text, label = row
+            for (text, label) in reader:
                 items.append(NLPDataItem(text, label.strip()))
 
         return NLPDataset(items, text_vocab, label_vocab)
@@ -129,9 +128,7 @@ class Vocab:
         with open(file_name) as data_file:
             reader = csv.reader(data_file)
 
-            for row in reader:
-                text, label = row
-
+            for (text, label) in reader:
                 if not for_labels:
                     tokens = text.split()
 
