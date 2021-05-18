@@ -61,9 +61,9 @@ class Vocab:
         :return: the mapped tokens
         """
         if isinstance(tokens, str):
-            return self.stoi[tokens]
+            return self.stoi.get(tokens, _UNK_)
 
-        return list(map(self.stoi.get, tokens))
+        return [self.stoi.get(token, _UNK_) for token in tokens]
 
 
 def embedding_matrix(vocab, emb_length, file_name=None):
