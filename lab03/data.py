@@ -14,7 +14,7 @@ _UNK_ = '<UNK>'
 @dataclass
 class NLPDataItem:
     """Class representing an item in a dataset of texts."""
-    text: str
+    text: [str]
     label: str
 
 
@@ -48,7 +48,7 @@ class NLPDataset(torch.utils.data.Dataset):
             reader = csv.reader(data_file)
 
             for (text, label) in reader:
-                items.append(NLPDataItem(text, label.strip()))
+                items.append(NLPDataItem(text.split(), label.strip()))
 
         text_vocab = Vocab.from_csv(file_name)
         label_vocab = Vocab.from_csv(file_name, for_labels=True)
