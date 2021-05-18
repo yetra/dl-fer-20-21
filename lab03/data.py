@@ -16,6 +16,26 @@ class NLPDataItem:
     label: str
 
 
+class NLPDataset(torch.utils.data.Dataset):
+    """Class representing an NLP dataset."""
+
+    def __init__(self, items, text_vocab, label_vocab):
+        """
+        Inits a NLPDataset instance.
+
+        :param items: the NLPDataItem instances in the dataset
+        :param text_vocab: the Vocab for text data
+        :param label_vocab: the Vocab for the corresponding labels
+        """
+        self.items = items
+
+        self._text_vocab = text_vocab
+        self._label_vocab = label_vocab
+
+    def __getitem__(self, index):
+        pass
+
+
 class Vocab:
     """Class for transforming tokens into integers."""
 
