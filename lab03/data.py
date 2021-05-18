@@ -58,12 +58,12 @@ class Vocab:
         Maps the given tokens to integers.
 
         :param tokens: a list of tokens to map (or a single token)
-        :return: the mapped tokens
+        :return: the mapped tokens (torch.Tensor)
         """
         if isinstance(tokens, str):
-            return self.stoi.get(tokens, _UNK_)
+            return torch.tensor(self.stoi.get(tokens, _UNK_))
 
-        return [self.stoi.get(token, _UNK_) for token in tokens]
+        return torch.tensor([self.stoi.get(token, _UNK_) for token in tokens])
 
 
 def embedding_matrix(vocab, emb_length, file_name=None):
