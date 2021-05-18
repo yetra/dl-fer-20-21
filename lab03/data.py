@@ -117,7 +117,8 @@ class Vocab:
         :return: the mapped tokens (torch.Tensor)
         """
         if isinstance(tokens, str):
-            return torch.tensor([self.stoi.get(tokens, self.stoi[_UNK_])])
+            key = tokens if tokens in self.stoi else _UNK_
+            return torch.tensor([self.stoi[key]])
 
         return torch.tensor([self.stoi.get(token, self.stoi[_UNK_])
                              for token in tokens])
