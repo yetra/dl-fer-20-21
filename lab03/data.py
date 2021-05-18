@@ -22,3 +22,14 @@ class Vocab:
         self.frequencies = frequencies
         self.max_size = max_size
         self.min_freq = min_freq
+
+        self.stoi = self._stoi()
+
+    def _stoi(self):
+        """Creates a mapping of dataset tokens to integers."""
+        stoi = {'<PAD>': 0, '<UNK>': 1}
+
+        sorted_tokens = sorted(self.frequencies, key=self.frequencies.get)
+        stoi.update({token: (i + 2) for i, token in enumerate(sorted_tokens)})
+
+        return stoi
