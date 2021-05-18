@@ -75,7 +75,7 @@ class Vocab:
                          (-1 if all tokens should be stored)
         :param min_freq: the minimal frequency needed for storing a token
         """
-        self.max_size = len(frequencies + 2) if max_size == -1 else max_size
+        self.max_size = len(frequencies) + 2 if max_size == -1 else max_size
         self.min_freq = max(0, min_freq)
 
         self.stoi = self._stoi(frequencies)
