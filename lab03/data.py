@@ -37,7 +37,10 @@ class Vocab:
         sorted_tokens = sorted(frequencies, key=frequencies.get)
 
         for i, token in enumerate(sorted_tokens):
-            if len(stoi) <= self.max_size and frequencies[token] >= self.min_freq:
+            if len(stoi) == self.max_size:
+                break
+
+            if frequencies[token] >= self.min_freq:
                 stoi[token] = i + 2
 
         return stoi
