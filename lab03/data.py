@@ -66,16 +66,17 @@ class NLPDataset(torch.utils.data.Dataset):
 class Vocab:
     """Class for transforming tokens into integers."""
 
-    def __init__(self, frequencies, max_size, min_freq):
+    def __init__(self, frequencies, max_size=-1, min_freq=0):
         """
         Inits a Vocab instance.
 
         :param frequencies: a dict of dataset token frequencies
         :param max_size: the largest number of tokens that can be stored
+                         (-1 if all tokens should be stored)
         :param min_freq: the minimal frequency needed for storing a token
         """
-        self.max_size = max_size
-        self.min_freq = min_freq
+        self.max_size = len(frequencies + 2) if max_size == -1 else max_size
+        self.min_freq = max(0, min_freq)
 
         self.stoi = self._stoi(frequencies)
         self.itos = {i: s for s, i in self.stoi.items()}
