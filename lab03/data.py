@@ -44,3 +44,15 @@ class Vocab:
                 stoi[token] = i + 2
 
         return stoi
+
+    def encode(self, tokens):
+        """
+        Maps the given tokens to integers.
+
+        :param tokens: a list of tokens to map (or a single token)
+        :return: the mapped tokens
+        """
+        if isinstance(tokens, str):
+            return self.stoi[tokens]
+
+        return list(map(self.stoi.get, tokens))
