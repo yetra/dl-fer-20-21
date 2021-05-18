@@ -2,6 +2,11 @@ from dataclasses import dataclass
 
 import torch
 import torch.nn as nn
+import torch.utils.data
+
+# special tokens
+_PAD_ = '<PAD>'
+_UNK_ = '<UNK>'
 
 
 @dataclass
@@ -35,7 +40,7 @@ class Vocab:
         :param frequencies: a dict of dataset token frequencies
         :return: the token->int map
         """
-        stoi = {'<PAD>': 0, '<UNK>': 1}
+        stoi = {_PAD_: 0, _UNK_: 1}
 
         sorted_tokens = sorted(frequencies, key=frequencies.get)
 
