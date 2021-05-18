@@ -56,7 +56,11 @@ class NLPDataset(torch.utils.data.Dataset):
         return NLPDataset(items, text_vocab, label_vocab)
 
     def __getitem__(self, index):
-        pass
+        """Returns an int representation of the item at the given index."""
+        item = self.items[index]
+
+        return (self._text_vocab.encode(item.text),
+                self._text_vocab.encode(item.label))
 
 
 class Vocab:
