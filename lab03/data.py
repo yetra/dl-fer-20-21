@@ -200,7 +200,7 @@ def pad_collate(batch, padding_value=0.0):
     texts, labels = zip(*batch)
 
     return (nn.utils.rnn.pad_sequence(texts, batch_first=True, padding_value=padding_value),
-            torch.tensor(labels),
+            torch.tensor(labels, dtype=torch.float),
             torch.tensor([len(text) for text in texts]))
 
 
