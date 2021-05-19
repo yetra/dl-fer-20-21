@@ -1,4 +1,6 @@
+import torch
 import torch.nn as nn
+import numpy as np
 
 
 class Baseline(nn.Module):
@@ -25,3 +27,22 @@ class Baseline(nn.Module):
         logits = self.modules.forward(x)
 
         return nn.BCEWithLogitsLoss(logits)
+
+
+def train(dataloader, model, loss_fn, optimizer):
+    """Performs one train loop iteration."""
+    size = len(dataloader.dataset)
+
+    for batch_num, (X, y) in enumerate(dataloader):
+        # compute prediction and loss
+        pred = model(X)
+        loss = loss_fn(pred, y)
+
+        # backpropagation
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        if batch_num % 100 == 0:
+            loss, current = loss.item(), batch_num * len(X)
+            print(f'loss: {loss:>7f}  [{current:>5d}/{size:>5d}]')
