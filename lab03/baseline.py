@@ -19,3 +19,9 @@ class Baseline(nn.Module):
             nn.ReLU(),
             nn.Linear(150, 1)
         )
+
+    def forward(self, x):
+        """Returns a prediction for the given input."""
+        logits = self.modules.forward(x)
+
+        return nn.BCEWithLogitsLoss(logits)
