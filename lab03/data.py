@@ -35,11 +35,13 @@ class NLPDataset(torch.utils.data.Dataset):
         self.label_vocab = label_vocab
 
     @staticmethod
-    def from_csv(file_name):
+    def from_csv(file_name, text_vocab=None, label_vocab=None):
         """
         Constructs an NLPDataset from the given CSV file.
 
         :param file_name: path to the dataset CSV file
+        :param text_vocab: the Vocab for text data
+        :param label_vocab: the Vocab for the corresponding labels
         :return: an NLPDataset instance
         """
         items = []
@@ -50,8 +52,10 @@ class NLPDataset(torch.utils.data.Dataset):
             for (text, label) in reader:
                 items.append(NLPDataItem(text.split(), label.strip()))
 
-        text_vocab = Vocab.from_csv(file_name)
-        label_vocab = Vocab.from_csv(file_name, for_labels=True)
+        if not text_vocab:
+            text_vocab = Vocab.from_csv(file_name)
+        if not label_vocab:
+            label_vocab = Vocab.from_csv(file_name, for_labels=True)
 
         return NLPDataset(items, text_vocab, label_vocab)
 
