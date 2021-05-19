@@ -31,8 +31,8 @@ class NLPDataset(torch.utils.data.Dataset):
         """
         self.items = items
 
-        self._text_vocab = text_vocab
-        self._label_vocab = label_vocab
+        self.text_vocab = text_vocab
+        self.label_vocab = label_vocab
 
     @staticmethod
     def from_csv(file_name):
@@ -63,8 +63,8 @@ class NLPDataset(torch.utils.data.Dataset):
         """Returns an int representation of the item at the given index."""
         item = self.items[index]
 
-        return (self._text_vocab.encode(item.text),
-                self._label_vocab.encode(item.label))
+        return (self.text_vocab.encode(item.text),
+                self.label_vocab.encode(item.label))
 
 
 class Vocab:
