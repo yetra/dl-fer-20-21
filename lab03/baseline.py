@@ -51,7 +51,7 @@ def train(dataloader, model, loss_fn, optimizer):
     for batch_num, (X, y, _) in enumerate(dataloader):
         # compute prediction and loss
         pred = model(X)
-        loss = loss_fn(pred, y)
+        loss = loss_fn(torch.squeeze(pred), y)
 
         # backpropagation
         optimizer.zero_grad()
@@ -69,9 +69,9 @@ def evaluate(dataloader, model, loss_fn):
     test_loss, correct = 0, 0
 
     with torch.no_grad():
-        for X, y in dataloader:
+        for X, y, _ in dataloader:
             pred = model(X)
-            test_loss += loss_fn(pred, y).item()
+            test_loss += loss_fn(torch.squeeze(pred), y).item()
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
 
     test_loss /= size
