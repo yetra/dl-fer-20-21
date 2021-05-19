@@ -42,7 +42,7 @@ def train(dataloader, model, loss_fn, optimizer):
     """Performs one train loop iteration."""
     size = len(dataloader.dataset)
 
-    for batch_num, (X, y) in enumerate(dataloader):
+    for batch_num, (X, y, _) in enumerate(dataloader):
         # compute prediction and loss
         pred = model(X)
         loss = loss_fn(pred, y)
