@@ -112,20 +112,10 @@ class Vocab:
                 stoi[token] = i + shift
 
         return stoi
-
-    def encode(self, tokens):
-        """
-        Maps the given tokens to integers.
-
-        :param tokens: a list of tokens to map (or a single token)
-        :return: the mapped tokens (torch.Tensor)
-        """
-        if isinstance(tokens, str):
-            key = tokens if tokens in self.stoi else _UNK_
-            return torch.tensor([self.stoi[key]])
-
-        return torch.tensor([self.stoi.get(token, self.stoi[_UNK_])
-                             for token in tokens])
+    
+    def __len__(self):
+        """The number of items in the Vocab."""
+        return len(self.stoi)
 
     @staticmethod
     def from_csv(file_name, max_size=-1, min_freq=0, for_labels=False):
@@ -154,6 +144,20 @@ class Vocab:
                     frequencies[label.strip()] += 1
 
         return Vocab(frequencies, max_size, min_freq, for_labels)
+
+    def encode(self, tokens):
+        """
+        Maps the given tokens to integers.
+
+        :param tokens: a list of tokens to map (or a single token)
+        :return: the mapped tokens (torch.Tensor)
+        """
+        if isinstance(tokens, str):
+            key = tokens if tokens in self.stoi else _UNK_
+            return torch.tensor([self.stoi[key]])
+
+        return torch.tensor([self.stoi.get(token, self.stoi[_UNK_])
+                             for token in tokens])
 
 
 def embedding_matrix(vocab, emb_length, file_name=None):
