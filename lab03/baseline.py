@@ -23,7 +23,7 @@ class Baseline(nn.Module):
         super().__init__()
 
         self.embeddings = embeddings
-        self.modules = nn.Sequential(
+        self.seq_modules = nn.Sequential(
             nn.Linear(300, 150),
             nn.ReLU(),
             nn.Linear(150, 150),
@@ -33,7 +33,7 @@ class Baseline(nn.Module):
 
     def forward(self, x):
         """Returns a prediction for the given input."""
-        logits = self.modules.forward(x)
+        logits = self.seq_modules.forward(x)
 
         return nn.BCEWithLogitsLoss(logits)
 
