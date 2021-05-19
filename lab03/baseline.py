@@ -37,11 +37,11 @@ class Baseline(nn.Module):
         )
 
     def forward(self, x):
-        """Returns a prediction for the given input."""
+        """Performs the forward pass."""
         emb_pooled = torch.mean(self.embeddings(x), dim=1)
-        logits = self.seq_modules.forward(emb_pooled)
+        output = self.seq_modules.forward(emb_pooled)
 
-        return nn.BCEWithLogitsLoss(logits)
+        return output
 
 
 def train(dataloader, model, loss_fn, optimizer):
