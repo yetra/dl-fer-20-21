@@ -33,7 +33,8 @@ class Baseline(nn.Module):
 
     def forward(self, x):
         """Returns a prediction for the given input."""
-        logits = self.seq_modules.forward(x)
+        emb_pooled = torch.mean(self.embeddings(x), dim=1)
+        logits = self.seq_modules.forward(emb_pooled)
 
         return nn.BCEWithLogitsLoss(logits)
 
