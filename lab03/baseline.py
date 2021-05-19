@@ -4,7 +4,7 @@ import torch.utils.data
 
 import numpy as np
 
-from data import NLPDataset, pad_collate
+from data import NLPDataset, pad_collate, embedding_matrix
 
 
 class Baseline(nn.Module):
@@ -14,10 +14,15 @@ class Baseline(nn.Module):
     avg_pool() -> fc(300, 150) -> ReLU() -> fc(150, 150) -> ReLU() -> fc(150,1)
     """
 
-    def __init__(self):
-        """Inits the baseline model."""
+    def __init__(self, embeddings):
+        """
+        Inits the baseline model.
+
+        :param embeddings: the embedding matrix (torch.nn.Embedding)
+        """
         super().__init__()
 
+        self.embeddings = embeddings
         self.modules = nn.Sequential(
             nn.Linear(300, 150),
             nn.ReLU(),
@@ -74,9 +79,12 @@ def main(seed=7052020, epochs=10):
     np.random.seed(seed)
     torch.manual_seed(seed)
 
+    train_dataset = NLPDataset.from_csv('data/sst_train_raw.csv')
+    embeddings = embedding_matrix(train_dataset.text_vocab, 300)
+
     train_dataloader = torch.utils.data.DataLoader(
-        dataset=NLPDataset.from_csv('data/sst_train_raw.csv'),
-        batch_size=10, shuffle=True, collate_fn=pad_collate)
+        dataset=train_dataset, batch_size=10,
+        shuffle=True, collate_fn=pad_collate)
     valid_dataloader = torch.utils.data.DataLoader(
         dataset=NLPDataset.from_csv('data/sst_valid_raw.csv'),
         batch_size=32, shuffle=True, collate_fn=pad_collate)
@@ -84,7 +92,7 @@ def main(seed=7052020, epochs=10):
         dataset=NLPDataset.from_csv('data/sst_test_raw.csv'),
         batch_size=32, shuffle=True, collate_fn=pad_collate)
 
-    model = Baseline()
+    model = Baseline(embeddings)
     loss_fn = nn.BCEWithLogitsLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
