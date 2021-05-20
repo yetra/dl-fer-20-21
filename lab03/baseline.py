@@ -4,6 +4,8 @@ import torch.utils.data
 
 import numpy as np
 
+import matplotlib.pyplot as plt
+
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
 
 from data import NLPDataset, pad_collate, embedding_matrix
@@ -94,7 +96,7 @@ def evaluate(dataloader, model, loss_fn):
     return loss, acc
 
 
-def main(seed=7052020, epochs=10):
+def main(seed=7052020, epochs=5):
     """Performs SST sentiment analysis using Baseline."""
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -117,10 +119,21 @@ def main(seed=7052020, epochs=10):
     loss_fn = nn.BCEWithLogitsLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
+    loss_vals, acc_vals = [], []
+
     for epoch in range(epochs):
         print(f'Epoch {epoch}\n-------------------------------')
         train(train_dataloader, model, loss_fn, optimizer)
-        evaluate(valid_dataloader, model, loss_fn)
+        loss, acc = evaluate(valid_dataloader, model, loss_fn)
+        loss_vals.append(loss)
+        acc_vals.append(acc)
+
+    plt.plot(range(epochs), loss_vals, label='loss')
+    plt.plot(range(epochs), acc_vals, label='acc')
+    plt.title('validation set loss and acc')
+    plt.xlabel('epoch')
+    plt.legend()
+    plt.show()
 
     print(f'Test data performance\n-------------------------------')
     evaluate(test_dataloader, model, loss_fn)
