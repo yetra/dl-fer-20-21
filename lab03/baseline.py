@@ -70,7 +70,6 @@ def train(dataloader, model, loss_fn, optimizer, clip=None):
 
 def evaluate(dataloader, model, loss_fn):
     """Performs one test loop iteration."""
-    size = len(dataloader.dataset)
     y_true, y_pred = [], []
     loss = 0
 
@@ -83,11 +82,16 @@ def evaluate(dataloader, model, loss_fn):
             y_true.extend(y.detach().cpu().numpy())
             y_pred.extend(pred.detach().cpu().numpy())
 
+    loss /= len(dataloader.dataset)
+    acc = accuracy_score(y_true, y_pred)
+
     print(f'Test Error:\n'
-          f'\tAccuracy: {(100*accuracy_score(y_true, y_pred)):>0.1f}%\n'
+          f'\tAccuracy: {(100 * acc):>0.1f}%\n'
           f'\tF1 score: {f1_score(y_true, y_pred):>8f}\n'
-          f'\tAvg loss: {loss / size:>8f}\n'
+          f'\tAvg loss: {loss:>8f}\n'
           f'Confusion matrix:\n{confusion_matrix(y_true, y_pred)}\n')
+
+    return loss, acc
 
 
 def main(seed=7052020, epochs=10):
