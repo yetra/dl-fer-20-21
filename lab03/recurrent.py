@@ -15,7 +15,7 @@ class Recurrent(nn.Module):
     """
 
     def __init__(self, embeddings, recurrent_unit, num_layers=2,
-                 bidirectional=False, hidden_size=150):
+                 bidirectional=False, hidden_size=150, activation=nn.ReLU):
         """
         Inits the baseline model.
 
@@ -24,6 +24,7 @@ class Recurrent(nn.Module):
         :param num_layers: number of recurrent layers
         :param bidirectional: True for bidirectional recurrent units
         :param hidden_size: hidden layer size
+        :param activation: the activation function to use after nn.Linear
         """
         super().__init__()
 
@@ -33,7 +34,7 @@ class Recurrent(nn.Module):
             bidirectional=bidirectional)
         self.seq_modules = nn.Sequential(
             nn.Linear(hidden_size, hidden_size),
-            nn.ReLU(),
+            activation(),
             nn.Linear(hidden_size, 1)
         )
 
@@ -55,6 +56,7 @@ if __name__ == '__main__':
 
     model = Recurrent(embeddings, nn.RNN)
     # model = Recurrent(embeddings, nn.LSTM)
+    # model = Recurrent(embeddings, nn.LSTM, activation=nn.LeakyReLU)
     # model = Recurrent(embeddings, nn.GRU)
     # model = Recurrent(embeddings, nn.GRU, num_layers=1)
     # model = Recurrent(embeddings, nn.GRU, hidden_size=200)

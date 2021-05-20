@@ -14,21 +14,22 @@ class Baseline(nn.Module):
     avg_pool() -> fc(300, 150) -> ReLU() -> fc(150, 150) -> ReLU() -> fc(150,1)
     """
 
-    def __init__(self, embeddings, hidden_size=150):
+    def __init__(self, embeddings, hidden_size=150, activation=nn.ReLU):
         """
         Inits the baseline model.
 
         :param embeddings: the embedding matrix (torch.nn.Embedding)
         :param hidden_size: hidden layer size
+        :param activation: the activation function to use after nn.Linear
         """
         super().__init__()
 
         self.embeddings = embeddings
         self.seq_modules = nn.Sequential(
             nn.Linear(300, hidden_size),
-            nn.ReLU(),
+            activation(),
             nn.Linear(hidden_size, hidden_size),
-            nn.ReLU(),
+            activation(),
             nn.Linear(hidden_size, 1)
         )
 
@@ -50,6 +51,7 @@ if __name__ == '__main__':
     model = Baseline(embeddings)
     # model = Baseline(embeddings, hidden_size=100)
     # model = Baseline(embeddings, hidden_size=200)
+    # model = Baseline(embeddings, activation=nn.LeakyReLU)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
     # optimizer = torch.optim.SGD(model.parameters(), lr=1e-4)
