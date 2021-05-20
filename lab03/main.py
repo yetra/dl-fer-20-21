@@ -82,8 +82,7 @@ def evaluate(dataloader, model, loss_fn):
     loss /= len(dataloader.dataset)
     acc = accuracy_score(y_true, y_pred)
 
-    print(f'Validation set performance\n'
-          f'Accuracy: {(100 * acc):>0.1f}%\n'
+    print(f'Accuracy: {(100 * acc):>0.1f}%\n'
           f'F1 score: {f1_score(y_true, y_pred):>8f}\n'
           f'Avg loss: {loss:>8f}\n'
           f'Confusion matrix:\n{confusion_matrix(y_true, y_pred)}\n')
@@ -139,6 +138,7 @@ def main(model, optimizer, train_dataloader, valid_dataloader,
         loss = train(train_dataloader, model, loss_fn, optimizer, clip)
         train_losses.append(loss)
 
+        print('Validation set performance')
         loss, acc = evaluate(valid_dataloader, model, loss_fn)
         valid_losses.append(loss)
         valid_accs.append(acc)
