@@ -15,6 +15,29 @@ VALID_PATH = 'data/sst_valid_raw.csv'
 TEST_PATH = 'data/sst_test_raw.csv'
 
 
+def prepare_data():
+    """
+    Prepares SST data.
+
+    :return: train, valid, and test DataLoaders; and the embeddings
+    """
+    train_dataset = NLPDataset.from_csv(TRAIN_PATH)
+    text_vocab, label_vocab = train_dataset.text_vocab, train_dataset.label_vocab
+    embeddings = embedding_matrix(text_vocab, 300)
+
+    train_dataloader = torch.utils.data.DataLoader(
+        dataset=train_dataset, batch_size=10,
+        shuffle=True, collate_fn=pad_collate)
+    valid_dataloader = torch.utils.data.DataLoader(
+        dataset=NLPDataset.from_csv(VALID_PATH, text_vocab, label_vocab),
+        batch_size=32, shuffle=True, collate_fn=pad_collate)
+    test_dataloader = torch.utils.data.DataLoader(
+        dataset=NLPDataset.from_csv(TEST_PATH, text_vocab, label_vocab),
+        batch_size=32, shuffle=True, collate_fn=pad_collate)
+
+    return train_dataloader, valid_dataloader, test_dataloader, embeddings
+
+
 def train(dataloader, model, loss_fn, optimizer, clip=None):
     """Performs one train loop iteration."""
     size = len(dataloader.dataset)
@@ -68,19 +91,7 @@ def main(seed=7052020, epochs=5):
     np.random.seed(seed)
     torch.manual_seed(seed)
 
-    train_dataset = NLPDataset.from_csv(TRAIN_PATH)
-    text_vocab, label_vocab = train_dataset.text_vocab, train_dataset.label_vocab
-    embeddings = embedding_matrix(text_vocab, 300)
-
-    train_dataloader = torch.utils.data.DataLoader(
-        dataset=train_dataset, batch_size=10,
-        shuffle=True, collate_fn=pad_collate)
-    valid_dataloader = torch.utils.data.DataLoader(
-        dataset=NLPDataset.from_csv(VALID_PATH, text_vocab, label_vocab),
-        batch_size=32, shuffle=True, collate_fn=pad_collate)
-    test_dataloader = torch.utils.data.DataLoader(
-        dataset=NLPDataset.from_csv(TEST_PATH, text_vocab, label_vocab),
-        batch_size=32, shuffle=True, collate_fn=pad_collate)
+    train_dataloader, valid_dataloader, test_dataloader, embeddings = prepare_data()
 
     model = Baseline(embeddings)
     loss_fn = nn.BCEWithLogitsLoss()
