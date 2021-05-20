@@ -10,7 +10,6 @@ from data import NLPDataset, pad_collate, embedding_matrix
 from baseline import Baseline
 
 # paths to datasets
-
 TRAIN_PATH = 'data/sst_train_raw.csv'
 VALID_PATH = 'data/sst_valid_raw.csv'
 TEST_PATH = 'data/sst_test_raw.csv'
@@ -34,8 +33,7 @@ def train(dataloader, model, loss_fn, optimizer, clip=None):
         optimizer.step()
 
         if batch_num % 100 == 0:
-            print(X.shape)
-            loss, current = loss.item(), batch_num * len(X)
+            loss, current = loss.item(), batch_num * X.shape[1]
             print(f'loss: {loss:>7f}  [{current:>5d}/{size:>5d}]')
 
 
@@ -56,10 +54,10 @@ def evaluate(dataloader, model, loss_fn):
     loss /= len(dataloader.dataset)
     acc = accuracy_score(y_true, y_pred)
 
-    print(f'Test Error:\n'
-          f'\tAccuracy: {(100 * acc):>0.1f}%\n'
-          f'\tF1 score: {f1_score(y_true, y_pred):>8f}\n'
-          f'\tAvg loss: {loss:>8f}\n'
+    print(f'Validation set performance\n'
+          f'Accuracy: {(100 * acc):>0.1f}%\n'
+          f'F1 score: {f1_score(y_true, y_pred):>8f}\n'
+          f'Avg loss: {loss:>8f}\n'
           f'Confusion matrix:\n{confusion_matrix(y_true, y_pred)}\n')
 
     return loss, acc
@@ -104,7 +102,7 @@ def main(seed=7052020, epochs=5):
     plt.legend()
     plt.show()
 
-    print(f'Test data performance\n-------------------------------')
+    print(f'Test set performance\n-------------------------------')
     evaluate(test_dataloader, model, loss_fn)
 
 
