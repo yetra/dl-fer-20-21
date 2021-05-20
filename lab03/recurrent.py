@@ -60,4 +60,8 @@ if __name__ == '__main__':
     # model = Recurrent(embeddings, nn.GRU, hidden_size=200)
     # model = Recurrent(embeddings, nn.GRU, bidirectional=True)
 
-    main(model, train_dataloader, valid_dataloader, test_dataloader, clip=0.25)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+    # optimizer = torch.optim.SGD(model.parameters(), lr=1e-4)
+
+    main(model, optimizer, train_dataloader,
+         valid_dataloader, test_dataloader, clip=0.25)

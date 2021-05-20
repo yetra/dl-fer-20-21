@@ -48,5 +48,10 @@ if __name__ == '__main__':
         test_dataloader, embeddings = prepare_data()
 
     model = Baseline(embeddings)
+    # model = Baseline(embeddings, hidden_size=100)
+    # model = Baseline(embeddings, hidden_size=200)
 
-    main(model, train_dataloader, valid_dataloader, test_dataloader)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+    # optimizer = torch.optim.SGD(model.parameters(), lr=1e-4)
+
+    main(model, optimizer, train_dataloader, valid_dataloader, test_dataloader)

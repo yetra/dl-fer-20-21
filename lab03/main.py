@@ -101,22 +101,20 @@ def plot_performance(loss_vals, acc_vals, epochs):
     plt.show()
 
 
-def main(model, train_dataloader, valid_dataloader,
-         test_dataloader, epochs=5, lr=1e-4, clip=None):
+def main(model, optimizer, train_dataloader, valid_dataloader,
+         test_dataloader, epochs=5, clip=None):
     """
     Performs SST sentiment analysis using the given model.
 
     :param model: the model for sentiment analysis
+    :param optimizer: the optimizer to use
     :param train_dataloader: training set DataLoader
     :param valid_dataloader: training set DataLoader
     :param test_dataloader: training set DataLoader
     :param epochs: the number of epochs
-    :param lr: the optimizer learning rate
     :param clip: max gradient norm for gradient clipping
     """
     loss_fn = nn.BCEWithLogitsLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-
     loss_vals, acc_vals = [], []
 
     for epoch in range(epochs):
