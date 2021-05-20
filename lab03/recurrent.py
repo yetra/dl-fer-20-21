@@ -1,4 +1,8 @@
+import torch
 import torch.nn as nn
+import numpy as np
+
+from main import prepare_data, main
 
 SEED = 7052020
 
@@ -34,3 +38,17 @@ class Recurrent(nn.Module):
         output = self.seq_modules(recurrent_output[-1])
 
         return output
+
+
+if __name__ == '__main__':
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+
+    train_dataloader, valid_dataloader, \
+        test_dataloader, embeddings = prepare_data()
+
+    # model = Recurrent(embeddings, nn.RNN)
+    # model = Recurrent(embeddings, nn.LSTM)
+    model = Recurrent(embeddings, nn.GRU)
+
+    main(model, train_dataloader, valid_dataloader, test_dataloader, clip=0.25)
