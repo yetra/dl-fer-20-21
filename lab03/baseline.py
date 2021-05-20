@@ -44,7 +44,7 @@ class Baseline(nn.Module):
         return output
 
 
-def train(dataloader, model, loss_fn, optimizer):
+def train(dataloader, model, loss_fn, optimizer, clip=None):
     """Performs one train loop iteration."""
     size = len(dataloader.dataset)
 
@@ -56,6 +56,9 @@ def train(dataloader, model, loss_fn, optimizer):
         # backpropagation
         optimizer.zero_grad()
         loss.backward()
+        # gradient clipping (optional)
+        if clip:
+            nn.utils.clip_grad_norm_(model.parameters(), clip)
         optimizer.step()
 
         if batch_num % 100 == 0:
