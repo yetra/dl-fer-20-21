@@ -1,5 +1,7 @@
 import torch.nn as nn
 
+SEED = 7052020
+
 
 class Recurrent(nn.Module):
     """
@@ -27,8 +29,8 @@ class Recurrent(nn.Module):
 
     def forward(self, x):
         """Performs the forward pass."""
-        embeddings = self.embeddings(x)
-        recurrent_output, _ = self.recurrent_module(embeddings)
-        output = self.seq_modules(recurrent_output)
+        emb = self.embeddings(x)
+        recurrent_output, _ = self.recurrent_module(emb)
+        output = self.seq_modules(recurrent_output[-1])
 
         return output
