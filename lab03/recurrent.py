@@ -14,17 +14,19 @@ class Recurrent(nn.Module):
     rnn(150) -> rnn(150) -> fc(150, 150) -> ReLU() -> fc(150,1)
     """
 
-    def __init__(self, embeddings, recurrent_unit):
+    def __init__(self, embeddings, recurrent_unit, bidirectional=False):
         """
         Inits the baseline model.
 
         :param embeddings: the embedding matrix (torch.nn.Embedding)
         :param recurrent_unit: torch.nn.RNN / torch.nn.LSTM / torch.nn.GRU
+        :param bidirectional: True for bidirectional recurrent units
         """
         super().__init__()
 
         self.embeddings = embeddings
-        self.recurrent_module = recurrent_unit(300, 150, num_layers=2)
+        self.recurrent_module = recurrent_unit(
+            300, 150, num_layers=2, bidirectional=bidirectional)
         self.seq_modules = nn.Sequential(
             nn.Linear(150, 150),
             nn.ReLU(),
