@@ -1,11 +1,10 @@
 import torch
 import torch.nn as nn
-import torch.utils.data
+import numpy as np
 
-# paths to datasets
-TRAIN_PATH = 'data/sst_train_raw.csv'
-VALID_PATH = 'data/sst_valid_raw.csv'
-TEST_PATH = 'data/sst_test_raw.csv'
+from main import prepare_data, main
+
+SEED = 7052020
 
 
 class Baseline(nn.Module):
@@ -38,3 +37,15 @@ class Baseline(nn.Module):
         output = self.seq_modules.forward(emb_pooled)
 
         return output
+
+
+if __name__ == '__main__':
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+
+    train_dataloader, valid_dataloader, \
+        test_dataloader, embeddings = prepare_data()
+
+    model = Baseline(embeddings)
+
+    main(model, train_dataloader, valid_dataloader, test_dataloader)
