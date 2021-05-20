@@ -91,19 +91,30 @@ def evaluate(dataloader, model, loss_fn):
     return loss, acc
 
 
-def plot_performance(loss_vals, acc_vals, epochs):
+def plot_performance(train_losses, valid_losses, valid_accs, epochs):
     """
     Plots validation set loss and accuracy per epoch.
 
-    :param loss_vals: the losses per epoch
-    :param acc_vals: the accuracies per epoch
+    :param train_losses: the training set losses per epoch
+    :param valid_losses: the validation set losses per epoch
+    :param valid_accs: the validation set accuracies per epoch
     :param epochs: the number of epochs
     """
-    plt.plot(range(epochs), loss_vals, label='loss')
-    plt.plot(range(epochs), acc_vals, label='acc')
-    plt.title('validation set loss and acc')
-    plt.xlabel('epoch')
-    plt.legend()
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    fig.subplots_adjust(wspace=0.4)
+
+    ax1.plot(range(1, epochs + 1), train_losses, label='train')
+    ax1.plot(range(1, epochs + 1), valid_losses, label='valid')
+    ax1.set_title('train and valid loss per epoch')
+    ax1.set_ylabel('loss')
+    ax1.set_xlabel('epoch')
+    ax1.legend()
+
+    ax2.plot(range(1, epochs + 1), valid_accs, label='valid')
+    ax2.set_title('valid accuracy per epoch')
+    ax2.set_ylabel('accuracy')
+    ax2.set_xlabel('epoch')
+
     plt.show()
 
 
@@ -132,7 +143,7 @@ def main(model, optimizer, train_dataloader, valid_dataloader,
         valid_losses.append(loss)
         valid_accs.append(acc)
 
-    plot_performance(valid_losses, valid_accs, epochs)
+    plot_performance(train_losses, valid_losses, valid_accs, epochs)
 
     print(f'Test set performance\n-------------------------------')
     evaluate(test_dataloader, model, loss_fn)
