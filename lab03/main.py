@@ -86,6 +86,22 @@ def evaluate(dataloader, model, loss_fn):
     return loss, acc
 
 
+def plot_performance(loss_vals, acc_vals, epochs):
+    """
+    Plots validation set loss and accuracy per epoch.
+
+    :param loss_vals: the losses per epoch
+    :param acc_vals: the accuracies per epoch
+    :param epochs: the number of epochs
+    """
+    plt.plot(range(epochs), loss_vals, label='loss')
+    plt.plot(range(epochs), acc_vals, label='acc')
+    plt.title('validation set loss and acc')
+    plt.xlabel('epoch')
+    plt.legend()
+    plt.show()
+
+
 def main(seed=7052020, epochs=5):
     """Performs SST sentiment analysis using Baseline."""
     np.random.seed(seed)
@@ -106,12 +122,7 @@ def main(seed=7052020, epochs=5):
         loss_vals.append(loss)
         acc_vals.append(acc)
 
-    plt.plot(range(epochs), loss_vals, label='loss')
-    plt.plot(range(epochs), acc_vals, label='acc')
-    plt.title('validation set loss and acc')
-    plt.xlabel('epoch')
-    plt.legend()
-    plt.show()
+    plot_performance(loss_vals, acc_vals, epochs)
 
     print(f'Test set performance\n-------------------------------')
     evaluate(test_dataloader, model, loss_fn)
