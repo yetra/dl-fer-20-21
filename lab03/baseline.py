@@ -14,21 +14,22 @@ class Baseline(nn.Module):
     avg_pool() -> fc(300, 150) -> ReLU() -> fc(150, 150) -> ReLU() -> fc(150,1)
     """
 
-    def __init__(self, embeddings):
+    def __init__(self, embeddings, hidden_size=150):
         """
         Inits the baseline model.
 
         :param embeddings: the embedding matrix (torch.nn.Embedding)
+        :param hidden_size: hidden layer size
         """
         super().__init__()
 
         self.embeddings = embeddings
         self.seq_modules = nn.Sequential(
-            nn.Linear(300, 150),
+            nn.Linear(300, hidden_size),
             nn.ReLU(),
-            nn.Linear(150, 150),
+            nn.Linear(hidden_size, hidden_size),
             nn.ReLU(),
-            nn.Linear(150, 1)
+            nn.Linear(hidden_size, 1)
         )
 
     def forward(self, x):
