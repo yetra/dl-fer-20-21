@@ -15,10 +15,11 @@ VALID_PATH = 'data/sst_valid_raw.csv'
 TEST_PATH = 'data/sst_test_raw.csv'
 
 
-def prepare_data():
+def prepare_data(batch_sizes=(10, 32, 32)):
     """
     Prepares SST data.
 
+    :param batch_sizes: the batch sizes for train, valid, and test sets
     :return: train, valid, and test DataLoaders; and the embeddings
     """
     train_dataset = NLPDataset.from_csv(TRAIN_PATH)
@@ -26,14 +27,14 @@ def prepare_data():
     embeddings = embedding_matrix(text_vocab, 300)
 
     train_dataloader = torch.utils.data.DataLoader(
-        dataset=train_dataset, batch_size=10,
+        dataset=train_dataset, batch_size=batch_sizes[0],
         shuffle=True, collate_fn=pad_collate)
     valid_dataloader = torch.utils.data.DataLoader(
         dataset=NLPDataset.from_csv(VALID_PATH, text_vocab, label_vocab),
-        batch_size=32, shuffle=True, collate_fn=pad_collate)
+        batch_size=batch_sizes[1], shuffle=True, collate_fn=pad_collate)
     test_dataloader = torch.utils.data.DataLoader(
         dataset=NLPDataset.from_csv(TEST_PATH, text_vocab, label_vocab),
-        batch_size=32, shuffle=True, collate_fn=pad_collate)
+        batch_size=batch_sizes[2], shuffle=True, collate_fn=pad_collate)
 
     return train_dataloader, valid_dataloader, test_dataloader, embeddings
 
