@@ -160,7 +160,7 @@ class Vocab:
                              for token in tokens])
 
 
-def embedding_matrix(vocab, emb_length, file_name=None):
+def embedding_matrix(vocab, emb_length, freeze=True, file_name=None):
     """
     Builds an embedding matrix for the given vocab.
 
@@ -172,6 +172,7 @@ def embedding_matrix(vocab, emb_length, file_name=None):
 
     :param vocab: a Vocab instance
     :param emb_length: length of an embedding vector
+    :param freeze: the embeddings won't be updated during training if True
     :param file_name: the file containing the embeddings
     :return: the embedding matrix (torch.nn.Embedding)
     """
@@ -186,7 +187,7 @@ def embedding_matrix(vocab, emb_length, file_name=None):
 
                 emb_matrix[index] = torch.tensor(map(float, emb_string.split()))
 
-    return nn.Embedding.from_pretrained(emb_matrix, padding_idx=0)
+    return nn.Embedding.from_pretrained(emb_matrix, padding_idx=0, freeze=freeze)
 
 
 def pad_collate(batch):
