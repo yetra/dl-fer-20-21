@@ -52,7 +52,7 @@ if __name__ == '__main__':
     torch.manual_seed(SEED)
 
     train_dataloader, valid_dataloader, \
-        test_dataloader, embeddings = prepare_data()
+        test_dataloader, embeddings = prepare_data()  # freeze=False
 
     model = Recurrent(embeddings, nn.RNN)
     # model = Recurrent(embeddings, nn.LSTM)
@@ -66,4 +66,4 @@ if __name__ == '__main__':
     # optimizer = torch.optim.SGD(model.parameters(), lr=1e-4)
 
     main(model, optimizer, train_dataloader,
-         valid_dataloader, test_dataloader, clip=0.25)
+         valid_dataloader, test_dataloader, clip=0.25)  # clip=0.5

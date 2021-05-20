@@ -46,7 +46,7 @@ if __name__ == '__main__':
     torch.manual_seed(SEED)
 
     train_dataloader, valid_dataloader, \
-        test_dataloader, embeddings = prepare_data()
+        test_dataloader, embeddings = prepare_data()  # freeze=False
 
     model = Baseline(embeddings)
     # model = Baseline(embeddings, hidden_size=100)
@@ -56,4 +56,5 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
     # optimizer = torch.optim.SGD(model.parameters(), lr=1e-4)
 
-    main(model, optimizer, train_dataloader, valid_dataloader, test_dataloader)
+    main(model, optimizer, train_dataloader,
+         valid_dataloader, test_dataloader)  # clip=0.25
