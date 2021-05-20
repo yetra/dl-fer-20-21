@@ -2,12 +2,10 @@ import torch
 import torch.nn as nn
 import torch.utils.data
 
-import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
 
 from data import NLPDataset, pad_collate, embedding_matrix
-from baseline import Baseline
 
 # paths to datasets
 TRAIN_PATH = 'data/sst_train_raw.csv'
@@ -103,16 +101,20 @@ def plot_performance(loss_vals, acc_vals, epochs):
     plt.show()
 
 
-def main(seed=7052020, epochs=5):
-    """Performs SST sentiment analysis using Baseline."""
-    np.random.seed(seed)
-    torch.manual_seed(seed)
+def main(model, train_dataloader, valid_dataloader,
+         test_dataloader, epochs=5, lr=1e-4):
+    """
+    Performs SST sentiment analysis using the given model.
 
-    train_dataloader, valid_dataloader, test_dataloader, embeddings = prepare_data()
-
-    model = Baseline(embeddings)
+    :param model: the model for sentiment analysis
+    :param train_dataloader: training set DataLoader
+    :param valid_dataloader: training set DataLoader
+    :param test_dataloader: training set DataLoader
+    :param epochs: the number of epochs
+    :param lr: the optimizer learning rate
+    """
     loss_fn = nn.BCEWithLogitsLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     loss_vals, acc_vals = [], []
 
@@ -127,7 +129,3 @@ def main(seed=7052020, epochs=5):
 
     print(f'Test set performance\n-------------------------------')
     evaluate(test_dataloader, model, loss_fn)
-
-
-if __name__ == '__main__':
-    main()
