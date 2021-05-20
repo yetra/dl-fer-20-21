@@ -189,19 +189,16 @@ def embedding_matrix(vocab, emb_length, file_name=None):
     return nn.Embedding.from_pretrained(emb_matrix, padding_idx=0)
 
 
-def pad_collate(batch, batch_first=False, padding_value=0.0):
+def pad_collate(batch):
     """
-    Collates and pads batch data.
+    Collates and pads batch data with 0's (int value for `_PAD_` symbol).
 
     :param batch: a list of NLPDataItems returned by `NLPDataset.__getitem__`
-    :param batch_first: output shape will be in BxTx* if True, else TxBx*
-    :param padding_value: the value with which to pad the data
     :return: tensors representing the input batch
     """
     texts, labels = zip(*batch)
 
-    return (nn.utils.rnn.pad_sequence(texts, batch_first=batch_first,
-                                      padding_value=padding_value),
+    return (nn.utils.rnn.pad_sequence(texts),
             torch.tensor(labels, dtype=torch.float),
             torch.tensor([len(text) for text in texts]))
 
