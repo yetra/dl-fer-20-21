@@ -38,7 +38,7 @@ class Baseline(nn.Module):
 
     def forward(self, x):
         """Performs the forward pass."""
-        emb_pooled = torch.mean(self.embeddings(x), dim=1)
+        emb_pooled = torch.mean(self.embeddings(x), dim=0)
         output = self.seq_modules.forward(emb_pooled)
 
         return output
