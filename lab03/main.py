@@ -42,11 +42,13 @@ def prepare_data(batch_sizes=(10, 32, 32), freeze=True):
 def train(dataloader, model, loss_fn, optimizer, clip=None):
     """Performs one train loop iteration."""
     size = len(dataloader.dataset)
+    total_loss = 0
 
     for batch_num, (X, y, _) in enumerate(dataloader):
         # compute prediction and loss
         output = model(X)
         loss = loss_fn(torch.squeeze(output), y)
+        total_loss += loss
 
         # backpropagation
         optimizer.zero_grad()
@@ -59,6 +61,8 @@ def train(dataloader, model, loss_fn, optimizer, clip=None):
         if batch_num % 100 == 0:
             loss, current = loss.item(), batch_num * X.shape[1]
             print(f'loss: {loss:>7f}  [{current:>5d}/{size:>5d}]')
+
+    return total_loss / size
 
 
 def evaluate(dataloader, model, loss_fn):
@@ -117,16 +121,18 @@ def main(model, optimizer, train_dataloader, valid_dataloader,
     :param clip: max gradient norm for gradient clipping
     """
     loss_fn = nn.BCEWithLogitsLoss()
-    loss_vals, acc_vals = [], []
+    train_losses, valid_losses, valid_accs = [], [], []
 
     for epoch in range(epochs):
         print(f'Epoch {epoch}\n-------------------------------')
-        train(train_dataloader, model, loss_fn, optimizer, clip)
-        loss, acc = evaluate(valid_dataloader, model, loss_fn)
-        loss_vals.append(loss)
-        acc_vals.append(acc)
+        loss = train(train_dataloader, model, loss_fn, optimizer, clip)
+        train_losses.append(loss)
 
-    plot_performance(loss_vals, acc_vals, epochs)
+        loss, acc = evaluate(valid_dataloader, model, loss_fn)
+        valid_losses.append(loss)
+        valid_accs.append(acc)
+
+    plot_performance(valid_losses, valid_accs, epochs)
 
     print(f'Test set performance\n-------------------------------')
     evaluate(test_dataloader, model, loss_fn)
