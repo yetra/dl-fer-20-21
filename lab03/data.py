@@ -74,7 +74,7 @@ class NLPDataset(torch.utils.data.Dataset):
 class Vocab:
     """Class for transforming tokens into integers."""
 
-    def __init__(self, frequencies, max_size=-1, min_freq=0, for_labels=False):
+    def __init__(self, frequencies, max_size=-1, min_freq=1, for_labels=False):
         """
         Inits a Vocab instance.
 
