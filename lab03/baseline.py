@@ -4,6 +4,8 @@ import torch.utils.data
 
 import numpy as np
 
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
+
 from data import NLPDataset, pad_collate, embedding_matrix
 
 # paths to datasets
@@ -50,8 +52,8 @@ def train(dataloader, model, loss_fn, optimizer, clip=None):
 
     for batch_num, (X, y, _) in enumerate(dataloader):
         # compute prediction and loss
-        pred = model(X)
-        loss = loss_fn(torch.squeeze(pred), y)
+        output = model(X)
+        loss = loss_fn(torch.squeeze(output), y)
 
         # backpropagation
         optimizer.zero_grad()
@@ -69,18 +71,23 @@ def train(dataloader, model, loss_fn, optimizer, clip=None):
 def evaluate(dataloader, model, loss_fn):
     """Performs one test loop iteration."""
     size = len(dataloader.dataset)
-    test_loss, correct = 0, 0
+    y_true, y_pred = [], []
+    loss = 0
 
     with torch.no_grad():
         for X, y, _ in dataloader:
-            pred = model(X)
-            test_loss += loss_fn(torch.squeeze(pred), y).item()
-            correct += (pred.argmax(1) == y).type(torch.float).sum().item()
+            output = torch.squeeze(model(X))
+            loss += loss_fn(output, y).item()
 
-    test_loss /= size
-    correct /= size
-    print(f'Test Error: \n Accuracy: {(100*correct):>0.1f}%, '
-          f'Avg loss: {test_loss:>8f} \n')
+            pred = torch.sigmoid(output).round()
+            y_true.extend(y.detach().cpu().numpy())
+            y_pred.extend(pred.detach().cpu().numpy())
+
+    print(f'Test Error:\n'
+          f'\tAccuracy: {(100*accuracy_score(y_true, y_pred)):>0.1f}%\n'
+          f'\tF1 score: {f1_score(y_true, y_pred):>8f}\n'
+          f'\tAvg loss: {loss / size:>8f}\n'
+          f'Confusion matrix:\n{confusion_matrix(y_true, y_pred)}\n')
 
 
 def main(seed=7052020, epochs=10):
