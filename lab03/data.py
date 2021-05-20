@@ -184,10 +184,11 @@ def embedding_matrix(vocab, emb_length, freeze=True, file_name=None):
             for line in emb_file:
                 token, emb_string = line.split(maxsplit=1)
                 index = vocab.stoi[token]
+                emb_matrix[index] = torch.tensor(
+                    list(map(float, emb_string.split())))
 
-                emb_matrix[index] = torch.tensor(map(float, emb_string.split()))
-
-    return nn.Embedding.from_pretrained(emb_matrix, padding_idx=0, freeze=freeze)
+    return nn.Embedding.from_pretrained(
+        emb_matrix, padding_idx=0, freeze=freeze)
 
 
 def pad_collate(batch):
