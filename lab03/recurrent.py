@@ -14,7 +14,7 @@ class Recurrent(nn.Module):
     rnn(150) -> rnn(150) -> fc(150, 150) -> ReLU() -> fc(150,1)
     """
 
-    def __init__(self, embeddings, recurrent_unit, num_layers=2,
+    def __init__(self, embeddings, recurrent_unit, num_layers=2, dropout=0.,
                  bidirectional=False, hidden_size=150, activation=nn.ReLU):
         """
         Inits the baseline model.
@@ -22,6 +22,7 @@ class Recurrent(nn.Module):
         :param embeddings: the embedding matrix (torch.nn.Embedding)
         :param recurrent_unit: torch.nn.RNN / torch.nn.LSTM / torch.nn.GRU
         :param num_layers: number of recurrent layers
+        :param dropout: if non-zero, dropout probability for recurrent modules
         :param bidirectional: True for bidirectional recurrent units
         :param hidden_size: hidden layer size
         :param activation: the activation function to use after nn.Linear
@@ -31,7 +32,7 @@ class Recurrent(nn.Module):
         self.embeddings = embeddings
         self.recurrent_module = recurrent_unit(
             300, hidden_size, num_layers=num_layers,
-            bidirectional=bidirectional)
+            dropout=dropout, bidirectional=bidirectional)
         self.seq_modules = nn.Sequential(
             nn.Linear(hidden_size, hidden_size),
             activation(),
@@ -55,6 +56,8 @@ if __name__ == '__main__':
         test_dataloader, embeddings = prepare_data()  # freeze=False
 
     model = Recurrent(embeddings, nn.RNN)
+    # model = Recurrent(embeddings, nn.RNN, num_layers=3)
+    # model = Recurrent(embeddings, nn.RNN, num_layers=3, dropout=0.4)
     # model = Recurrent(embeddings, nn.LSTM)
     # model = Recurrent(embeddings, nn.LSTM, activation=nn.LeakyReLU)
     # model = Recurrent(embeddings, nn.GRU)
